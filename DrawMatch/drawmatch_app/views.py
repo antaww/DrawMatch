@@ -5,7 +5,7 @@ from .forms import RoomForm
 
 def home(request):
     # Logique pour la page d'accueil
-    return render(request, 'drawmatch_app/home.html')
+    return render(request, 'home.html')
 
 
 def create_room(request):
