@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-y18dy!!+y)5jikw1i)0qb&$337^ldixp+fu=+zr)_=s6#(b3_=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.13.34.227']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.13.34.227', '192.168.1.25']
 
 # Application definition
 
@@ -65,7 +65,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 WSGI_APPLICATION = 'DrawMatch.wsgi.application'
 
@@ -111,7 +110,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "drawmatch_app/polls/static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

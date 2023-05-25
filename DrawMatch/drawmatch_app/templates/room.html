@@ -1,7 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>DrawMatch - Room {{ room_code }}</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <script src="{% static 'scripts/index.mjs' %}" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
 </head>
 <body>
     <h1>Room {{ room_code }}</h1>
