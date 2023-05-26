@@ -4,3 +4,8 @@
     border: 1px solid black;
     background-color: white;
 }
+
+.drawings-container {
+    display: flex;
+    gap: 3em;
+}

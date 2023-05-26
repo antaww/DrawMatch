@@ -6,9 +6,12 @@
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
     <script src="{% static 'scripts/index.mjs' %}" type="module"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+    </script>
 </head>
 <body>
     <h1>Room {{ room_code }}</h1>
-    <!-- Afficher les informations et les dessins du salon -->
+    <div class="drawings-container"></div>
 </body>
 </html>
