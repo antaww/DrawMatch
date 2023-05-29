@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Room, Draw
+
 from .forms import RoomForm
+from .models import Room
 
 
 def home(request):
@@ -31,16 +32,20 @@ def join_room(request):
 
 
 def room(request, room_code):
-    # Récupérer les informations du salon en utilisant le code
-    # Gérer l'affichage des informations et des dessins associés au salon
-    return render(request, 'room.html', {'room_code': room_code})
+    context = {
+        'room_code': room_code
+    }
+    return render(request, 'room.html', context)
 
 
-def draw(request, room_code):
-    if request.method == 'POST':
-        # Traiter le dessin soumis par l'utilisateur
-        # Calculer le degré de correspondance avec l'IA
-        # Enregistrer le dessin dans la base de données
-        # Redirection ou affichage de résultats
-        return redirect('room', room_code=room_code)
-    return render(request, 'draw.html', {'room_code': room_code})
+# channel_layer = get_channel_layer()
+
+
+# def draw(room_code, data):
+#     channel_layer.group_send(
+#         room_code,
+#         {
+#             'type': 'draw_event',
+#             'data': data
+#         }
+#     )

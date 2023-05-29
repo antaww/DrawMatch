@@ -74,7 +74,6 @@ def predict_drawing(model: tf.lite.Interpreter, image: str, labels: list[str]) -
     return labels[top_prediction]
 
 
-@csrf_exempt
 def main(request: HttpRequest) -> HttpResponse:
     if request.method != 'POST':
         return HttpResponse('Only POST requests are supported', status=400)

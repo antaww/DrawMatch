@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
     <script>
         const csrftoken = '{{ csrf_token }}';
+        const room_code = {{ room_code }};
+        const connectionString = `ws://${window.location.host}/ws/room/{{room_code}}/`;
     </script>
 </head>
 <body>

@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drawmatch_app'
+    'channels',
+    'drawmatch_app',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +54,8 @@ ROOT_URLCONF = 'DrawMatch.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'drawmatch_app/templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'drawmatch_app/templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,7 +68,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DrawMatch.wsgi.application'
+# WSGI_APPLICATION = 'DrawMatch.wsgi.application'
+ASGI_APPLICATION = 'DrawMatch.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
