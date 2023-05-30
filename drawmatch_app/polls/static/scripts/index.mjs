@@ -3,10 +3,29 @@ const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
 const drawingsContainer = document.querySelector(".drawings-container");
 
+console.log(gameSocket);
+
+gameSocket.onmessage = (e) => {
+    console.log(`Server: ${e.data}`)
+    const data = JSON.parse(e.data);
+    if (data.type === "draw") {
+        const {
+            canvas, x, y, px, py
+        } = data.data;
+        canvas.line(x, y, px, py);
+    }
+}
+
+gameSocket.onopen = (e) => {
+    console.log("Connected to websocket");
+}
+
+gameSocket.onclose = (e) => {
+    console.log("Disconnected from websocket");
+}
+
 function setupCanvas(canvas, id) {
     console.log(connectionString);
-    const gameSocket = new WebSocket(connectionString);
-    window.gameSocket = gameSocket;
     let timeout;
     let drawing = false;
 
@@ -17,34 +36,6 @@ function setupCanvas(canvas, id) {
         canvas.background("#FFFFFF");
         canvas.canvas.id = id;
         drawingsContainer.appendChild(canvas.canvas);
-
-        gameSocket.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            if (data.type === "draw") {
-                const {
-                    x, y, px, py
-                } = data.data;
-                canvas.line(x, y, px, py);
-            }
-        }
-
-        gameSocket.addEventListener("close", (event) => {
-            if (event.wasClean) {
-                console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-            } else {
-                console.log(`[close] Connection died, code=${event.code}, reason=${event.reason}`);
-            }
-        });
-
-        gameSocket.addEventListener("error", event => {
-            console.log(`Error occurred`);
-            console.error(event)
-        });
-
-        gameSocket.addEventListener("open", ev => {
-            console.log("Connected to websocket");
-            console.log(ev)
-        });
     }
 
     canvas.draw = () => {
@@ -65,7 +56,7 @@ function setupCanvas(canvas, id) {
             console.log(data);
             gameSocket.send(JSON.stringify({
                 type: "draw", data: {
-                    x: canvas.mouseX, y: canvas.mouseY, px: canvas.pmouseX, py: canvas.pmouseY
+                    canvas: canvas.id, x: canvas.mouseX, y: canvas.mouseY, px: canvas.pmouseX, py: canvas.pmouseY
                 }
             }));
             timeout = null;

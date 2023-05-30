@@ -10,6 +10,7 @@
         const csrftoken = '{{ csrf_token }}';
         const room_code = {{ room_code }};
         const connectionString = `ws://${window.location.host}/ws/room/{{room_code}}/`;
+        const gameSocket = new WebSocket(connectionString);
     </script>
 </head>
 <body>

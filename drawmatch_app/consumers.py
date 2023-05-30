@@ -1,5 +1,4 @@
 from typing import Any
-
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
 

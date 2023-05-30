@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'drawmatch_app',
+    'daphne',
 ]
 
 MIDDLEWARE = [
@@ -54,8 +55,7 @@ ROOT_URLCONF = 'DrawMatch.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [os.path.join(BASE_DIR, 'drawmatch_app/templates')],
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'drawmatch_app/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

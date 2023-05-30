@@ -1,7 +1,6 @@
-from django.template.defaulttags import url
-
 from drawmatch_app.consumers import DrawConsumer
+from django.urls import path
 
 websocket_urlpatterns = [
-    url(r'^ws/room/(?P<room_code>\w+)/$', DrawConsumer.as_asgi()),
+    path('ws/room/<room_code>/', DrawConsumer.as_asgi),
 ]
