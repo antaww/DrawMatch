@@ -8,11 +8,17 @@ console.log(gameSocket);
 gameSocket.onmessage = (e) => {
     console.log(`Server: ${e.data}`)
     const data = JSON.parse(e.data);
-    if (data.type === "draw") {
+    const {payload} = data;
+    if (payload.type === "draw") {
         const {
             canvas, x, y, px, py
-        } = data.data;
-        canvas.line(x, y, px, py);
+        } = payload.data;
+        const canvasElement = document.getElementById(canvas);
+        const ctx = canvasElement.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(x, y);
+        ctx.stroke();
     }
 }
 
@@ -34,13 +40,19 @@ function setupCanvas(canvas, id) {
         canvas.strokeWeight(STROKE_WEIGHT);
         canvas.stroke("black");
         canvas.background("#FFFFFF");
-        canvas.canvas.id = id;
+        canvas.id = id;
         drawingsContainer.appendChild(canvas.canvas);
+        canvas.canvas.id = id;
     }
 
     canvas.draw = () => {
         if (!drawing) return;
         canvas.line(canvas.mouseX, canvas.mouseY, canvas.pmouseX, canvas.pmouseY);
+        gameSocket.send(JSON.stringify({
+            type: "draw", data: {
+                canvas: canvas.id, x: canvas.mouseX, y: canvas.mouseY, px: canvas.pmouseX, py: canvas.pmouseY
+            }
+        }));
 
         if (timeout) return;
         timeout = setTimeout(async () => {
@@ -54,11 +66,6 @@ function setupCanvas(canvas, id) {
             })
             const data = await response.text();
             console.log(data);
-            gameSocket.send(JSON.stringify({
-                type: "draw", data: {
-                    canvas: canvas.id, x: canvas.mouseX, y: canvas.mouseY, px: canvas.pmouseX, py: canvas.pmouseY
-                }
-            }));
             timeout = null;
         }, 200);
     }

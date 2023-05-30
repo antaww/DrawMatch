@@ -25,6 +25,7 @@ class DrawConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
 
+    # Receive message from WebSocket
     async def receive(self, text_data: str = None, _: Any = None) -> None:
         data = json.loads(text_data)
         await self.channel_layer.group_send(
@@ -35,7 +36,8 @@ class DrawConsumer(AsyncJsonWebsocketConsumer):
             }
         )
 
-    async def send_message(self, res):
+    # Receive message from room group
+    async def draw(self, event):
         await self.send(text_data=json.dumps({
-            "payload": res
+            'payload': event['data']
         }))

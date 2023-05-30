@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '10.13.34.227', '192.168.1.25', '192.
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'drawmatch_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
-    'drawmatch_app',
-    'daphne',
 ]
 
 MIDDLEWARE = [
