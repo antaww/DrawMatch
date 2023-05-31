@@ -1,12 +1,11 @@
 const WIDTH = 500;
 const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
+const guesserDelay = 150; // ms
 const drawingsContainer = document.querySelector(".drawings-container");
 
-console.log(gameSocket);
-
 gameSocket.onmessage = (e) => {
-    console.log(`Server: ${e.data}`)
+    // console.log(`Server: ${e.data}`) // debug : payload
     const data = JSON.parse(e.data);
     const {payload} = data;
     if (payload.type === "draw") {
@@ -31,7 +30,6 @@ gameSocket.onclose = (e) => {
 }
 
 function setupCanvas(canvas, id) {
-    console.log(connectionString);
     let timeout;
     let drawing = false;
 
@@ -40,9 +38,9 @@ function setupCanvas(canvas, id) {
         canvas.strokeWeight(STROKE_WEIGHT);
         canvas.stroke("black");
         canvas.background("#FFFFFF");
-        canvas.id = id;
+        canvas.id = id; // p5 id
         drawingsContainer.appendChild(canvas.canvas);
-        canvas.canvas.id = id;
+        canvas.canvas.id = id; // HTML id
     }
 
     canvas.draw = () => {
@@ -67,7 +65,7 @@ function setupCanvas(canvas, id) {
             const data = await response.text();
             console.log(data);
             timeout = null;
-        }, 200);
+        }, guesserDelay);
     }
 
     canvas.mousePressed = () => drawing = canvas.mouseX > 0 && canvas.mouseX <= WIDTH && canvas.mouseY > 0 && canvas.mouseY <= HEIGHT;
