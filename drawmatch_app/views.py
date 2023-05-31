@@ -1,7 +1,8 @@
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 
 from .forms import RoomForm
-from .models import Room
+from .models import ActiveRooms
 
 
 def home(request):
@@ -32,20 +33,12 @@ def join_room(request):
 
 
 def room(request, room_code):
+    try:
+        ActiveRooms.objects.get(pk=room_code)
+    except ActiveRooms.DoesNotExist:
+        return HttpResponseNotFound('Room does not exist!')  # todo: create 404 template
+
     context = {
         'room_code': room_code
     }
     return render(request, 'room.html', context)
-
-
-# channel_layer = get_channel_layer()
-
-
-# def draw(room_code, data):
-#     channel_layer.group_send(
-#         room_code,
-#         {
-#             'type': 'draw_event',
-#             'data': data
-#         }
-#     )

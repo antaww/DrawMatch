@@ -1,20 +1,28 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 
-class Room(models.Model):
-    code = models.CharField(max_length=10, unique=True)
-    room_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='salons_crees')
-
-    def __str__(self):
-        return self.code
+# After creating a new model, you should first run python manage.py makemigrations to create migrations for those
+# changes and then run python manage.py migrate to apply those changes to the database.
 
 
-class Draw(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='dessins')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='draws/')
-    correspondence = models.DecimalField(max_digits=5, decimal_places=2)
+# Users table (id, name, password, victories, created_date)
+class Users(models.Model):
+    name = models.CharField(max_length=15, unique=True)
+    password = models.CharField(max_length=50)
+    victories = models.IntegerField(default=0)
+    created_date = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Dessin du salon {self.room.code} par {self.user.username}"
+
+# ActiveRooms table (id, id_user_left, id_user_right, created_date)
+class ActiveRooms(models.Model):
+    id = models.CharField(max_length=6, primary_key=True)
+    id_user_left = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='left', null=True)
+    id_user_right = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='right', null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
+# Sessions table (id, user, created_date)
+class Sessions(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='sessions')
+    id = models.CharField(max_length=64, primary_key=True)
+    created_date = models.DateTimeField(auto_now_add=True)
