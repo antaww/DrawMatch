@@ -1,29 +1,18 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 
-from .forms import RoomForm
+from .decorators.login_decorator import custom_login_required
+from .decorators.logout_decorator import custom_logout_required
 from .models import ActiveRooms
 
 
+@custom_login_required
 def home(request):
     # Logique pour la page d'accueil
     return render(request, 'home.html')
 
 
-def create_room(request):
-    if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room_code = form.cleaned_data['room_code']
-            creator = request.user
-            salon = Room.objects.create(code=room_code, createur=creator)
-            # Autres traitements ou redirections
-            return redirect('room', room_code=room_code)
-    else:
-        form = RoomForm()
-    return render(request, 'create_room.html', {'form': form})
-
-
+@custom_login_required
 def join_room(request):
     if request.method == 'POST':
         room_code = request.POST.get('room_code')
@@ -32,6 +21,7 @@ def join_room(request):
     return render(request, 'join_room.html')
 
 
+@custom_login_required
 def room(request, room_code):
     try:
         ActiveRooms.objects.get(pk=room_code)
@@ -42,3 +32,15 @@ def room(request, room_code):
         'room_code': room_code
     }
     return render(request, 'room.html', context)
+
+
+@custom_logout_required
+def login(request):
+    return render(request, 'login.html')
+
+
+def handler404(request, exception):
+    if request.user.is_authenticated:
+        return redirect('/')
+    else:
+        return redirect('/login/')
