@@ -5,7 +5,6 @@ const guesserDelay = 150; // ms
 const drawingsContainer = document.querySelector(".drawings-container");
 
 gameSocket.onmessage = (e) => {
-    // console.log(`Server: ${e.data}`) // debug : payload
     const data = JSON.parse(e.data);
     const {payload} = data;
     if (payload.type === "draw") {

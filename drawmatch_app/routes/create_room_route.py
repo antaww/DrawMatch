@@ -1,8 +1,5 @@
-from os import path
-
 from django.shortcuts import redirect
 
-from drawmatch_app import views
 from drawmatch_app.models import ActiveRooms
 
 

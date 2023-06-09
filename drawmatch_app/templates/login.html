@@ -4,14 +4,18 @@
 <head>
     <title>DrawMatch - Login</title>
     <script src="{% static 'scripts/login.mjs' %}" type="module"></script>
+    <link rel="stylesheet" href="{% static 'styles/login.css' %}">
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+    </script>
 </head>
 <body>
-    <h1>Login Page</h1>
-    <form method="post" class="login-form">
-        <input type="text" name="username" id="username" placeholder="Username" required>
-        <input type="password" name="password" id="password" placeholder="Password" required>
-        <button type="submit" id="login">Login</button>
-        <button type="submit" id="register">Register</button>
-    </form>
+<h1>Login Page</h1>
+<form method="post" class="login-form">
+    <input type="text" name="username" id="username" placeholder="Username" required>
+    <input type="password" name="password" id="password" placeholder="Password" required>
+    <button type="submit" id="login-btn">Login</button>
+    <button type="submit" id="register-btn">Register</button>
+</form>
 </body>
 </html>

@@ -1,9 +1,15 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
+from django.views.static import serve
 
+from DrawMatch import settings
 from .decorators.login_decorator import custom_login_required
 from .decorators.logout_decorator import custom_logout_required
 from .models import ActiveRooms
+
+
+def serve_static(request, path):
+    return serve(request, path, document_root=settings.STATIC_ROOT)
 
 
 @custom_login_required
