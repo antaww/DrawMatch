@@ -5,7 +5,7 @@ from django.views.static import serve
 from DrawMatch import settings
 from .decorators.login_decorator import custom_login_required
 from .decorators.logout_decorator import custom_logout_required
-from .models import ActiveRooms
+from .models import ActiveRooms, Sessions
 
 
 def serve_static(request, path):
@@ -14,15 +14,17 @@ def serve_static(request, path):
 
 @custom_login_required
 def home(request):
-    # Logique pour la page d'accueil
-    return render(request, 'home.html')
+    try:
+        username = request.user.name
+    except Exception as e:
+        print(e)
+    return render(request, 'home.html', {'username': username})
 
 
 @custom_login_required
 def join_room(request):
     if request.method == 'POST':
         room_code = request.POST.get('room_code')
-        # Vérifier si le code du salon existe et gérer les redirections
         return redirect('room', room_code=room_code)
     return render(request, 'join_room.html')
 

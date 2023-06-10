@@ -1,6 +1,5 @@
 async function callServer(e, form, route) {
     e.preventDefault();
-    console.log(form.username.value, form.password.value);
     const response = await fetch(route, {
         method: "POST",
         body: JSON.stringify({
@@ -12,17 +11,20 @@ async function callServer(e, form, route) {
     });
 
     const data = await response.text();
-    console.log(data);
+    if (response.status === 200) {
+        window.location.href = "/";
+    } else {
+        alert(data); //todo: replace with front end error message
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM loaded");
     const loginForm = document.querySelector(".login-form");
     const loginBtn = document.querySelector("#login-btn");
     const registerBtn = document.querySelector("#register-btn");
 
     registerBtn.addEventListener("click", async (e) => {
-        await callServer(e, loginForm, "/register");
+        await callServer(e, loginForm, "/register-route");
     });
 
     loginBtn.addEventListener("click", async (e) => {

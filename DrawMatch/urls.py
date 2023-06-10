@@ -2,12 +2,13 @@ from django.urls import path, re_path
 
 from drawmatch_app import views
 from drawmatch_app.ai_testing import draw_guess
-from drawmatch_app.routes import create_room_route, register_route, login_route
+from drawmatch_app.routes import create_room_route, register_route, login_route, logout_route
 
 urlpatterns = [
     re_path('static/(?P<path>.*)$', views.serve_static),
-    path('register', register_route.main),
+    path('register-route', register_route.main),
     path('login-route', login_route.main),
+    path('logout-route', logout_route.main),
     path('login/', views.login),
     path('', views.home),
     path('create-room/', create_room_route.main),
