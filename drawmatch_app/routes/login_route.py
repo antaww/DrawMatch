@@ -1,8 +1,9 @@
 import json
+import uuid
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 
-from drawmatch_app.models import Users
+from drawmatch_app.models import Users, Sessions
 
 
 def main(request: HttpRequest) -> HttpResponse:
@@ -17,4 +18,17 @@ def main(request: HttpRequest) -> HttpResponse:
     user = Users.objects.get(name=username)
     if user.password != password:
         return HttpResponse('Incorrect password', status=400)
-    return HttpResponse('User logged in successfully', status=200)
+    try:
+        session_id = uuid.uuid4()
+        print(session_id)
+        Sessions.objects.create(
+            user=user,
+            id=session_id
+        )
+        response = JsonResponse({'session_id': session_id})
+        response.set_cookie(key='session_id', value=session_id)
+        HttpResponse('User logged in successfully', status=200)
+        return response
+    except Exception as e:
+        print(e)
+        return HttpResponse('Error while logging in', status=500)

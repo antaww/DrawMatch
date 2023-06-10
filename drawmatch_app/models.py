@@ -23,6 +23,6 @@ class ActiveRooms(models.Model):
 
 # Sessions table (id, user, created_date)
 class Sessions(models.Model):
-    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='sessions')
     id = models.CharField(max_length=64, primary_key=True)
     created_date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='sessions')
