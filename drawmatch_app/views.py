@@ -26,7 +26,15 @@ def room(request, room_code):
     try:
         requestedRoom = ActiveRooms.objects.get(pk=room_code)
     except ActiveRooms.DoesNotExist:
-        return HttpResponseNotFound('Room does not exist!')  # todo: create 404 template
+        try:
+            username = request.user.name
+            context = {
+                'room_code': room_code,
+                'username': username
+            }
+            return render(request, 'unfindable_room.html', context)
+        except Exception as e:
+            print(e)
 
     user_id = request.user.id
 
@@ -70,6 +78,8 @@ def handler404(request, exception):
     if session_id:
         if request.path.startswith('/room/'):
             room_code = request.path.split('/')[2]
+            if room_code == '':
+                return redirect('/')
             return redirect('room', room_code=room_code)
         else:
             return redirect('/')

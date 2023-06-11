@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <title>DrawMatch - Home</title>
+    <script src="{% static 'scripts/logout.mjs' %}" type="module"></script>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/unfindable-room.css' %}">
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+    </script>
+</head>
+<body>
+<div class="container">
+    <img class="logo" src="{% static 'images/logo.png' %}" alt="logo">
+    <div class="unfindable-texts">
+        <span>What are you looking for {{ username }} ?</span>
+        <span>{{ room_code }} is not a valid room.</span>
+        <a href="/">
+            <button id="logout-btn" class="yellow-btn">Home</button>
+        </a>
+    </div>
+</div>
+</body>
+</html>
