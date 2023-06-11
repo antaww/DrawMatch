@@ -5,14 +5,17 @@
     <title>DrawMatch - Home</title>
     <script src="{% static 'scripts/logout.mjs' %}" type="module"></script>
     <script src="{% static 'scripts/create-room.mjs' %}" type="module"></script>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
     <script>
         const csrftoken = '{{ csrf_token }}';
     </script>
 </head>
 <body>
+<div class="container">
     <h1>Welcome to DrawMatch {{ username }}</h1>
     <button id="create-room-btn">Create room</button>
     {#todo: form to join room (call /room/{code} with code the input of the form)#}
     <button id="logout-btn">Logout</button>
+</div>
 </body>
 </html>

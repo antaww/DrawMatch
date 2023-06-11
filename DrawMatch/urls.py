@@ -18,7 +18,6 @@ urlpatterns = [
     # Pages
     path('login/', views.login),
     path('', views.home),
-    path('join-room/', views.join_room),
     path('room/<room_code>/', views.room, name='room'),
 ]
 

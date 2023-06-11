@@ -22,14 +22,6 @@ def home(request):
 
 
 @custom_login_required
-def join_room(request):
-    if request.method == 'POST':
-        room_code = request.POST.get('room_code')
-        return redirect('room', room_code=room_code)
-    return render(request, 'join_room.html')
-
-
-@custom_login_required
 def room(request, room_code):
     try:
         requestedRoom = ActiveRooms.objects.get(pk=room_code)

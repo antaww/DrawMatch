@@ -14,12 +14,14 @@
     </script>
 </head>
 <body>
+<div class="container">
     <h1>Room {{ room_code }}</h1>
     <div class="drawings-container"></div>
     {% if user == "left" %}
-    <p>You are the left user</p>
+        <p>You are the left user</p>
     {% elif user == "right" %}
-    <p>You are the right user</p>
+        <p>You are the right user</p>
     {% endif %}
+</div>
 </body>
 </html>
