@@ -1,10 +1,9 @@
+import random
 from django.http import HttpResponse
-
 from drawmatch_app.models import ActiveRooms
 
 
 def generate_room_code():
-    import random
     return ''.join([str(random.randint(0, 9)) for _ in range(6)])
 
 

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
    createRoomBtn.addEventListener('click', async () => {
       const response = await fetch('/create-room-route', {
-         method: "POST",
+         method: "GET",
          headers: {
             "X-CSRFToken": csrftoken
          }

@@ -5,17 +5,25 @@
     <title>DrawMatch - Home</title>
     <script src="{% static 'scripts/logout.mjs' %}" type="module"></script>
     <script src="{% static 'scripts/create-room.mjs' %}" type="module"></script>
+    <script src="{% static 'scripts/join-room.mjs' %}" type="module"></script>
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/home.css' %}">
     <script>
         const csrftoken = '{{ csrf_token }}';
     </script>
 </head>
 <body>
 <div class="container">
-    <h1>Welcome to DrawMatch {{ username }}</h1>
-    <button id="create-room-btn">Create room</button>
-    {#todo: form to join room (call /room/{code} with code the input of the form)#}
-    <button id="logout-btn">Logout</button>
+    <img class="logo" src="{% static 'images/logo.png' %}" alt="logo">
+    <span>{{ username }}</span>
+    <div class="interactions">
+        <button id="create-room-btn" class="red-btn">Play</button>
+        <form method="get" class="join-room-form">
+            <input type="text" name="room-code" placeholder="Room code" minlength="6" maxlength="6">
+            <button class="yellow-btn" type="submit">Join room</button>
+        </form>
+        <button id="logout-btn" class="red-btn">Logout</button>
+    </div>
 </div>
 </body>
 </html>
