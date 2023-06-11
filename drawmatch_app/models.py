@@ -16,8 +16,8 @@ class Users(models.Model):
 # ActiveRooms table (id, id_user_left, id_user_right, created_date)
 class ActiveRooms(models.Model):
     id = models.CharField(max_length=6, primary_key=True)
-    id_user_left = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='left', null=True)
-    id_user_right = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='right', null=True)
+    id_user_left = models.IntegerField(null=True)
+    id_user_right = models.IntegerField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
 

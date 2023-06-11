@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.http import HttpResponse
 
 from drawmatch_app.models import ActiveRooms
 
@@ -12,9 +12,13 @@ def main(request):
     room_code = generate_room_code()
     while ActiveRooms.objects.filter(pk=room_code).exists():
         room_code = generate_room_code()
-    ActiveRooms.objects.create(
-        id=room_code,
-        id_user_left_id=request.user.id,
-        id_user_right_id=None
-    )
-    return redirect('room', room_code)
+    try:
+        ActiveRooms.objects.create(
+            id=room_code,
+            id_user_left=None,
+            id_user_right=None
+        )
+        return HttpResponse(room_code, status=200)
+    except Exception as e:
+        print(e)
+        return HttpResponse('Error while creating room', status=500)
