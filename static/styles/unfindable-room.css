@@ -1,0 +1,7 @@
+.unfindable-texts {
+    align-items: center;
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+    justify-content: center;
+}

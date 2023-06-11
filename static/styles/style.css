@@ -34,8 +34,53 @@ body {
     background-size: contain;
     display: flex;
     flex-flow: column;
-    gap: 4em;
+    gap: 3em;
     height: 100vh;
     justify-content: center;
     width: 100vw;
+}
+
+form {
+    background: url("../images/white_wallpaper.png");
+    background-size: cover;
+    border-radius: 1em;
+    box-shadow: 0 3px 1px #d4d4d3;
+    display: flex;
+    flex-flow: column;
+    gap: 1.3em;
+    padding: 1.4em 0.4em;
+    width: 14em;
+}
+
+input {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid var(--input-border-color);
+    color: var(--input-color);
+    font-size: 2em;
+    outline: none;
+}
+
+.logo {
+    width: 27em;
+}
+
+.red-btn, .yellow-btn {
+    background: #E35533;
+    border: none;
+    border-radius: .3em;
+    box-shadow: 0 3px 1px #AD442B;
+    color: white;
+    font-size: 2em;
+    height: fit-content;
+}
+
+.yellow-btn {
+    background: #FFCF63;
+    box-shadow: 0 3px 1px #C6AC43;
+}
+
+span {
+    color: white;
+    font-size: 2em;
 }
