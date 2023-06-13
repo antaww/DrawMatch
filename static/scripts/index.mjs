@@ -3,6 +3,7 @@ const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
 const guesserDelay = 150; // ms
 const drawingsContainer = document.querySelector(".drawings-container");
+let isGameStarted = false;
 
 gameSocket.onmessage = (e) => {
     const data = JSON.parse(e.data);
@@ -20,13 +21,29 @@ gameSocket.onmessage = (e) => {
     }
 }
 
+userJoinedSocket.onmessage = e => {
+    const data = JSON.parse(e.data);
+    id_user_right = data.id_user_right;
+    console.log(id_user_right);
+    if(!isGameStarted) isGameStarted = true;
+}
+
 gameSocket.onopen = (e) => {
-    console.log("Connected to websocket");
+    console.log("Connected to websocket (game)");
 }
 
 gameSocket.onclose = (e) => {
-    console.log("Disconnected from websocket");
+    console.log("Disconnected from websocket (game)");
 }
+
+userJoinedSocket.onopen = (e) => {
+    console.log("Connected to websocket (user joined)");
+}
+
+userJoinedSocket.onclose = (e) => {
+    console.log("Disconnected from websocket (user joined)");
+}
+
 
 function setupCanvas(canvas, id) {
     let timeout;
@@ -44,6 +61,10 @@ function setupCanvas(canvas, id) {
 
     canvas.draw = () => {
         if (!drawing) return;
+        if(!isGameStarted) return;
+        if(canvas.id === "leftCanvas" && id_user !== id_user_left) return;
+        if(canvas.id === "rightCanvas" && id_user !== id_user_right) return;
+
         canvas.line(canvas.mouseX, canvas.mouseY, canvas.pmouseX, canvas.pmouseY);
         gameSocket.send(JSON.stringify({
             type: "draw", data: {

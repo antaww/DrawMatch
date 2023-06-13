@@ -8,18 +8,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
     <script>
         const csrftoken = '{{ csrf_token }}';
+        const id_user =
+            {% if user_id == None%}
+                null
+            {% else %}
+                {{ user_id }}
+            {% endif %};
+        const id_user_left =
+            {% if room.id_user_left == None%}
+                null
+            {% else %}
+                {{ room.id_user_left }}
+            {% endif %};
+        let id_user_right =
+            {% if room.id_user_right == None%}
+                null
+            {% else %}
+                {{ room.id_user_right }}
+            {% endif %};
         const room_code = {{ room_code }};
         const connectionString = `ws://${window.location.host}/ws/room/{{room_code}}/`;
         const gameSocket = new WebSocket(connectionString);
+        const userJoinedString = `ws://${window.location.host}/ws/userjoined/{{room_code}}/`;
+        const userJoinedSocket = new WebSocket(userJoinedString);
     </script>
 </head>
 <body>
 <div class="container">
     <h1>Room {{ room_code }}</h1>
     <div class="drawings-container"></div>
-    {% if user == "left" %}
+    {% if user_direction == "left" %}
         <p>You are the left user</p>
-    {% elif user == "right" %}
+    {% elif user_direction == "right" %}
         <p>You are the right user</p>
     {% endif %}
 </div>

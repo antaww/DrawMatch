@@ -41,6 +41,7 @@ body {
 }
 
 form {
+    align-items: center;
     background: url("../images/white_wallpaper.png");
     background-size: cover;
     border-radius: 1em;
@@ -59,6 +60,7 @@ input {
     color: var(--input-color);
     font-size: 2em;
     outline: none;
+    width: 6em;
 }
 
 .logo {
@@ -73,11 +75,20 @@ input {
     color: white;
     font-size: 2em;
     height: fit-content;
+    max-width: 6em;
+    min-width: 6em;
+    transition: all .2s ease-in;
 }
 
 .yellow-btn {
     background: #FFCF63;
     box-shadow: 0 3px 1px #C6AC43;
+}
+
+.red-btn:hover, .yellow-btn:hover {
+  cursor: pointer;
+  transform: translateY(3px);
+  box-shadow: none;
 }
 
 span {

@@ -25,11 +25,12 @@ def home(request):
 def room(request, room_code):
     try:
         requestedRoom = ActiveRooms.objects.get(pk=room_code)
+        username = request.user.name
     except ActiveRooms.DoesNotExist:
         try:
-            username = request.user.name
             context = {
                 'room_code': room_code,
+                'room': requestedRoom,
                 'username': username
             }
             return render(request, 'unfindable_room.html', context)
@@ -39,32 +40,28 @@ def room(request, room_code):
     user_id = request.user.id
 
     if requestedRoom.id_user_left and requestedRoom.id_user_left == user_id:
-        user = 'left'
-        context = {
-            'room_code': room_code,
-            'user': user
-        }
-        return render(request, 'room.html', context)
+        user_direction = 'left'
     elif requestedRoom.id_user_right and requestedRoom.id_user_right == user_id:
-        user = 'right'
-        context = {
-            'room_code': room_code,
-            'user': user
-        }
-        return render(request, 'room.html', context)
+        user_direction = 'right'
     elif requestedRoom.id_user_left is None:
-        ActiveRooms.objects.filter(pk=room_code).update(id_user_left=user_id)
-        user = 'left'
+        requestedRoom.id_user_left = user_id
+        user_direction = 'left'
     elif requestedRoom.id_user_right is None and requestedRoom.id_user_left != user_id:
-        ActiveRooms.objects.filter(pk=room_code).update(id_user_right=user_id)
-        user = 'right'
+        requestedRoom.id_user_right = user_id
+        user_direction = 'right'
     else:
         return HttpResponseNotFound('Room is full!')
 
+    requestedRoom.save()
+
     context = {
         'room_code': room_code,
-        'user': user
+        'room': requestedRoom,
+        'user_direction': user_direction,
+        'user_id': user_id,
+        'username': username
     }
+
     return render(request, 'room.html', context)
 
 
