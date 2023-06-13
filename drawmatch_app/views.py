@@ -23,19 +23,15 @@ def home(request):
 
 @custom_login_required
 def room(request, room_code):
+    username = request.user.name
     try:
         requestedRoom = ActiveRooms.objects.get(pk=room_code)
-        username = request.user.name
     except ActiveRooms.DoesNotExist:
-        try:
-            context = {
-                'room_code': room_code,
-                'room': requestedRoom,
-                'username': username
-            }
-            return render(request, 'unfindable_room.html', context)
-        except Exception as e:
-            print(e)
+        context = {
+            'room_code': room_code,
+            'username': username
+        }
+        return render(request, 'unfindable_room.html', context)
 
     user_id = request.user.id
 
