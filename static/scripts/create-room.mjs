@@ -1,3 +1,5 @@
+import {displayError} from "./utils.mjs";
+
 document.addEventListener('DOMContentLoaded', () => {
 	const createRoomBtn = document.querySelector('#create-room-btn');
 
@@ -14,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (response.status === 200) {
 			window.location.href = `/room/${data}`;
 		} else {
-			alert(data);
+			displayError(data)
 		}
 	});
 });

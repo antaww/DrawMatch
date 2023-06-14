@@ -12,6 +12,8 @@ def main(request: HttpRequest) -> HttpResponse:
     body = json.loads(body_unicode)
     username = body['username']
     password = body['password']
+    if not username or not password:
+        return HttpResponse('Username and password must be provided', status=400)
     if Users.objects.filter(name=username).exists():
         return HttpResponse('User already exists', status=400)
     Users.objects.create(

@@ -1,5 +1,8 @@
+import {displayError} from "./utils.mjs";
+
 async function callServer(e, form, route) {
 	e.preventDefault();
+
 	const response = await fetch(route, {
 		method: "POST",
 		body: JSON.stringify({
@@ -16,7 +19,7 @@ async function callServer(e, form, route) {
 	if (response.status === 200) {
 		window.location.href = "/";
 	} else {
-		alert(data); //todo: replace with front end error message
+		displayError(data)
 	}
 }
 

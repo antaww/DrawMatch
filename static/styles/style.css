@@ -99,3 +99,71 @@ span {
         transform: translateX(4px)
     }
 }
+
+.notice {
+    background: rgba(222, 76, 76, 0.71);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(51, 51, 51, 0.03);
+    font-size: 14px;
+    font-weight: 700;
+    left: 0;
+    margin: auto;
+    padding: 12px;
+    position: fixed;
+    right: 0;
+    text-align: center;
+    top: 30px;
+    visibility: hidden;
+    width: fit-content;
+    z-index: 100;
+}
+
+.notice.visible {
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    color: rgb(255, 255, 255);
+    font-size: 1.5em;
+    visibility: visible;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

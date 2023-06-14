@@ -1,3 +1,5 @@
+// import {displayError} from "./utils.mjs";
+
 document.addEventListener('DOMContentLoaded', () => {
 	const roomCode = document.querySelector('.room-code');
 
@@ -7,9 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Navigator.clipboard is not supported by HTTP protocol
 		// navigator.clipboard.writeText(roomCodeText).then(r => {
-		// 	alert('Copied to clipboard');
+		// 	displayError('Copied to clipboard')
 		// }).catch(err => {
-		// 	alert('Failed to copy to clipboard');
+		// 	displayError('Failed to copy to clipboard')
 		// });
 	});
 });
