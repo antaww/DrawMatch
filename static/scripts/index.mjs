@@ -1,9 +1,11 @@
 const WIDTH = 500;
 const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
-const guesserDelay = 150; // ms
+const guesserDelay = 300; // ms
 const drawingContainerLeft = document.querySelector(".drawing-container-left");
 const drawingContainerRight = document.querySelector(".drawing-container-right");
+const penSentence = document.querySelector(".pen-sentence");
+const penPrediction = document.querySelector(".pen-prediction");
 let isGameStarted = false;
 
 gameSocket.onmessage = (e) => {
@@ -29,7 +31,6 @@ gameSocket.onmessage = (e) => {
 userJoinedSocket.onmessage = e => {
 	const data = JSON.parse(e.data);
 	id_user_right = data.id_user_right;
-	console.log(data.name_user_right);
 	document.querySelector(".right-user-name").innerHTML = data.name_user_right;
 	if (!isGameStarted) isGameStarted = true;
 };
@@ -49,7 +50,6 @@ userJoinedSocket.onopen = (e) => {
 userJoinedSocket.onclose = (e) => {
 	console.log("Disconnected from websocket (user joined)");
 };
-
 
 function setupCanvas(canvas, id) {
 	let timeout;
@@ -98,7 +98,7 @@ function setupCanvas(canvas, id) {
 				}
 			});
 			const data = await response.text();
-			console.log(data);
+			displayPrediction(data);
 			timeout = null;
 		}, guesserDelay);
 	};
@@ -115,3 +115,21 @@ new p5(leftCanvas => {
 new p5(rightCanvas => {
 	setupCanvas(rightCanvas, "rightCanvas");
 });
+
+function displayPrediction(data) {
+	const sentences = ["It's a", "Hmm a", "Oh, a", "I think it's a", "I'm pretty sure it's a"];
+	let randomWord = sentences[Math.floor(Math.random() * sentences.length)];
+	const vowels = ["a", "e", "i", "o", "u"];
+
+	// Correct the article if needed
+	if (vowels.includes(data[0])) {
+		randomWord += "n ";
+	// Special case for "The ..."
+	} else if (data.substring(0, 4) === "The ") {
+		randomWord = randomWord.substring(0, randomWord.length - 1);
+	} else {
+		randomWord += " ";
+	}
+	penSentence.innerHTML = randomWord;
+	penPrediction.innerHTML = data;
+}

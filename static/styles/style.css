@@ -16,18 +16,6 @@ body {
     padding: 0;
 }
 
-.p5Canvas {
-    background-color: white;
-    border: 1px solid black;
-    height: 500px;
-    width: 500px;
-}
-
-.drawings-container {
-    display: flex;
-    gap: 3em;
-}
-
 .container {
     align-items: center;
     background: url("../images/orange_wallpaper.png");
@@ -86,12 +74,28 @@ input {
 }
 
 .red-btn:hover, .yellow-btn:hover {
-  cursor: pointer;
-  transform: translateY(3px);
-  box-shadow: none;
+    box-shadow: none;
+    cursor: pointer;
+    transform: translateY(3px);
 }
 
 span {
     color: white;
     font-size: 2em;
+}
+
+.shake {
+    animation: shake .2s ease-in-out;
+}
+
+@keyframes shake {
+    25% {
+        transform: translateX(4px)
+    }
+    50% {
+        transform: translateX(-4px)
+    }
+    75% {
+        transform: translateX(4px)
+    }
 }

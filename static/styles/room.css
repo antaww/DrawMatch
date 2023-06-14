@@ -1,7 +1,19 @@
+.p5Canvas {
+    background-color: white;
+    border-radius: .5em;
+    box-shadow: 0 7px 1px #d4d4d3;
+}
+
+.drawings-container {
+    display: flex;
+    gap: 10em;
+}
+
 .drawing-container-left, .drawing-container-right {
     align-items: center;
     display: flex;
     flex-flow: column;
+    gap: 1em;
 }
 
 .left-user-name {
@@ -10,4 +22,12 @@
 
 .right-user-name {
     color: #e35533;
+}
+
+.pen-sentence, .pen-prediction {
+    font-size: 100%;
+}
+
+.pen-prediction {
+    color: #d359ff;
 }
