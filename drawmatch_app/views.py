@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.static import serve
@@ -63,6 +64,29 @@ def login(request):
     return render(request, 'login.html')
 
 
+@custom_login_required
+def leaderboard(request):
+    try:
+        top_users = Users.objects.annotate(
+            victories_count=F('victories')
+        ).order_by('-victories_count')[:5]
+    except Exception as e:
+        print(e)
+
+    user = Users.objects.get(pk=request.user.id)
+
+    user_rank = Users.objects.filter(
+        victories__gt=user.victories
+    ).count() + 1
+
+    context = {
+        'users': top_users,
+        'connected_user': user,
+        'connected_user_rank': user_rank
+    }
+    return render(request, 'leaderboard.html', context)
+
+
 def handler404(request, exception):
     session_id = request.COOKIES.get('session_id')
     if session_id:
@@ -71,6 +95,8 @@ def handler404(request, exception):
             if room_code == '':
                 return redirect('/')
             return redirect('room', room_code=room_code)
+        elif request.path == '/leaderboard':
+            return redirect('leaderboard')
         else:
             return redirect('/')
     else:

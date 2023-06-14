@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DrawMatch - Leaderboard</title>
+    <link rel="icon" href="{% static 'images/pen.png' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/leaderboard.css' %}">
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/74fed0e2b5.js"></script>
+    <script>
+		const csrftoken = '{{ csrf_token }}';
+    </script>
+</head>
+<body>
+<div class="container">
+    <span class="leaderboard-title">Leaderboard</span>
+    <table class="leaderboard">
+        <tr class="titles">
+            <th class="rank">Rank</th>
+            <th class="name">Name</th>
+            <th class="wins">Wins</th>
+        </tr>
+
+        {% for user in users %}
+            <tr class="user">
+                <td class="rank top-{{ forloop.counter }}">
+                    {% if forloop.counter == 1 %}
+                        <i class="fa-solid fa-crown"></i>
+                    {% else %}
+                        {{ forloop.counter }}
+                    {% endif %}
+                </td>
+                <td class="name top-{{ forloop.counter }}">{{ user.name }}</td>
+                <td class="wins top-{{ forloop.counter }}">{{ user.victories }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3">
+                <hr>
+            </td>
+        </tr>
+        <tr>
+            <td class="rank">{{ connected_user_rank }}</td>
+            <td class="name">{{ connected_user.name }}</td>
+            <td class="wins">{{ connected_user.victories }}</td>
+        </tr>
+    </table>
+    <a href="/">
+        <button id="logout-btn" class="yellow-btn">Home</button>
+    </a>
+</div>
+</body>
+</html>

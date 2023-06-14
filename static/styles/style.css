@@ -16,6 +16,10 @@ body {
     padding: 0;
 }
 
+a {
+    color: inherit;
+}
+
 .container {
     align-items: center;
     background: url("../images/orange_wallpaper.png");

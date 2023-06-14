@@ -7,6 +7,7 @@
     <script src="{% static 'scripts/logout.mjs' %}" type="module"></script>
     <script src="{% static 'scripts/create-room.mjs' %}" type="module"></script>
     <script src="{% static 'scripts/join-room.mjs' %}" type="module"></script>
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/74fed0e2b5.js"></script>
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
     <link rel="stylesheet" href="{% static 'styles/home.css' %}">
     <script>
@@ -15,6 +16,7 @@
 </head>
 <body>
 <div class="container">
+    <div class="leaderboard"><a href="/leaderboard"><i class="fa-solid fa-trophy"></i></a></div>
     <img class="logo" src="{% static 'images/logo.png' %}" alt="logo">
     <span>{{ username }}</span>
     <div class="interactions">

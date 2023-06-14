@@ -1,0 +1,38 @@
+.leaderboard {
+    background: #00000026;
+    border-radius: 1em;
+    color: white;
+    display: flex;
+    flex-flow: column;
+    font-size: 1.3em;
+    gap: 1em;
+    padding: 2em;
+}
+
+.leaderboard-title {
+    font-size: 4em;
+}
+
+hr {
+    border-radius: 1em;
+    color: #ffffff87;
+    width: 100%;
+}
+
+.top-1 {
+    color: #ffcf63;
+    filter: drop-shadow(2px 0px 6px #ffcf63);
+}
+
+.top-2 {
+    color: #c6baba;
+}
+
+.top-3 {
+    color: #9f6d56;
+}
+
+th, td {
+    text-align: center;
+    font-size: 1.5em;
+}

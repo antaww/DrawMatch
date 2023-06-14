@@ -19,6 +19,7 @@ urlpatterns = [
     path('login/', views.login),
     path('', views.home),
     path('room/<room_code>/', views.room, name='room'),
+    path('leaderboard/', views.leaderboard, name='leaderboard'),
 ]
 
 handler404 = 'drawmatch_app.views.handler404'
