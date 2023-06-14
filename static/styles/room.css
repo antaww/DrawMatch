@@ -26,6 +26,7 @@
 
 .pen-sentence, .pen-prediction {
     font-size: 100%;
+    margin: 0 .1em;
 }
 
 .pen-prediction {
@@ -49,4 +50,13 @@
 .room-code-info {
     color: #ffffffba;
     font-size: 1em;
+}
+
+.pen-voice {
+    display: flex;
+}
+
+.pen-voice > img {
+    object-fit: cover;
+    width: 1em;
 }

@@ -11,6 +11,8 @@
 }
 
 body {
+    background: url("../images/orange_wallpaper.png");
+    background-size: contain;
     margin: 0;
     overflow: hidden;
     padding: 0;
@@ -22,8 +24,6 @@ a {
 
 .container {
     align-items: center;
-    background: url("../images/orange_wallpaper.png");
-    background-size: contain;
     display: flex;
     flex-flow: column;
     gap: 1em;

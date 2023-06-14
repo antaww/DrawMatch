@@ -118,18 +118,17 @@ new p5(rightCanvas => {
 
 function displayPrediction(data) {
 	const sentences = ["It's a", "Hmm a", "Oh, a", "I think it's a", "I'm pretty sure it's a"];
-	let randomWord = sentences[Math.floor(Math.random() * sentences.length)];
+	let randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
 	const vowels = ["a", "e", "i", "o", "u"];
 
 	// Correct the article if needed
 	if (vowels.includes(data[0])) {
-		randomWord += "n ";
+		randomSentence += "n";
 	// Special case for "The ..."
 	} else if (data.substring(0, 4) === "The ") {
-		randomWord = randomWord.substring(0, randomWord.length - 1);
-	} else {
-		randomWord += " ";
+		randomSentence = randomSentence.substring(0, randomSentence.length - 1);
 	}
-	penSentence.innerHTML = randomWord;
+
+	penSentence.innerHTML = " " + randomSentence + " "
 	penPrediction.innerHTML = data;
 }

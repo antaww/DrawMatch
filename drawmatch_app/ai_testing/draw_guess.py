@@ -9,7 +9,6 @@ from PIL import Image
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.http import HttpRequest, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from skimage import measure
 
 
