@@ -31,3 +31,22 @@
 .pen-prediction {
     color: #d359ff;
 }
+
+.room-code {
+    background-color: #00000059;
+    border-radius: .1em;
+    cursor: pointer;
+    font-size: 100%;
+    padding: .1em;
+}
+
+.room-info {
+    align-items: center;
+    display: flex;
+    flex-flow: column;
+}
+
+.room-code-info {
+    color: #ffffffba;
+    font-size: 1em;
+}
