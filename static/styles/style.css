@@ -34,7 +34,7 @@ body {
     background-size: contain;
     display: flex;
     flex-flow: column;
-    gap: 3em;
+    gap: 1em;
     height: 100vh;
     justify-content: center;
     width: 100vw;

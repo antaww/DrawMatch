@@ -1,0 +1,13 @@
+.drawing-container-left, .drawing-container-right {
+    align-items: center;
+    display: flex;
+    flex-flow: column;
+}
+
+.left-user-name {
+    color: #ffcf63;
+}
+
+.right-user-name {
+    color: #e35533;
+}

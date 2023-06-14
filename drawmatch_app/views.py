@@ -5,7 +5,7 @@ from django.views.static import serve
 from DrawMatch import settings
 from .decorators.login_decorator import custom_login_required
 from .decorators.logout_decorator import custom_logout_required
-from .models import ActiveRooms
+from .models import ActiveRooms, Users
 
 
 def serve_static(request, path):
@@ -23,27 +23,25 @@ def home(request):
 
 @custom_login_required
 def room(request, room_code):
-    username = request.user.name
+    user = Users.objects.get(pk=request.user.id)
     try:
         requestedRoom = ActiveRooms.objects.get(pk=room_code)
     except ActiveRooms.DoesNotExist:
         context = {
             'room_code': room_code,
-            'username': username
+            'username': user.name
         }
         return render(request, 'unfindable_room.html', context)
 
-    user_id = request.user.id
-
-    if requestedRoom.id_user_left and requestedRoom.id_user_left == user_id:
+    if requestedRoom.id_user_left and requestedRoom.id_user_left.id == user.id:
         user_direction = 'left'
-    elif requestedRoom.id_user_right and requestedRoom.id_user_right == user_id:
+    elif requestedRoom.id_user_right and requestedRoom.id_user_right.id == user.id:
         user_direction = 'right'
     elif requestedRoom.id_user_left is None:
-        requestedRoom.id_user_left = user_id
+        requestedRoom.id_user_left = user
         user_direction = 'left'
-    elif requestedRoom.id_user_right is None and requestedRoom.id_user_left != user_id:
-        requestedRoom.id_user_right = user_id
+    elif requestedRoom.id_user_right is None and requestedRoom.id_user_left.id != user.id:
+        requestedRoom.id_user_right = user
         user_direction = 'right'
     else:
         return HttpResponseNotFound('Room is full!')
@@ -54,8 +52,7 @@ def room(request, room_code):
         'room_code': room_code,
         'room': requestedRoom,
         'user_direction': user_direction,
-        'user_id': user_id,
-        'username': username
+        'user_id': user.id,
     }
 
     return render(request, 'room.html', context)

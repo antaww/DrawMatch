@@ -3,7 +3,7 @@ from typing import Any
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from drawmatch_app.models import ActiveRooms
+from drawmatch_app.models import ActiveRooms, Users
 
 
 class DrawConsumer(AsyncJsonWebsocketConsumer):
@@ -48,14 +48,18 @@ class UserJoinedConsumer(AsyncJsonWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         self.id_user_right = None
+        self.name_user_right = None
         self.room = None
         super().__init__(*args, **kwargs)
 
     async def user_joined(self, event):
         user_id = event['user_id']
+        user_name = event['user_name']
         self.id_user_right = user_id
+        self.name_user_right = user_name
         await self.send_json({
-            'id_user_right': self.id_user_right
+            'id_user_right': self.id_user_right,
+            'name_user_right': self.name_user_right
         })
 
     async def websocket_connect(self, event):
@@ -67,11 +71,15 @@ class UserJoinedConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.accept()
 
-        if self.room.id_user_right is not None:
+        if self.room.id_user_right_id is not None:
+            user_id = self.room.id_user_right_id
+            right_user = await sync_to_async(Users.objects.get)(pk=self.room.id_user_right_id)
+            user_name = right_user.name
             await self.channel_layer.group_send(
                 room_code,
                 {
                     'type': 'user_joined',
-                    'user_id': self.room.id_user_right
+                    'user_id': user_id,
+                    'user_name': user_name
                 }
             )
