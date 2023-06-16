@@ -2,11 +2,31 @@ const WIDTH = 500;
 const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
 const guesserDelay = 300; // ms
+const storeDrawingDelay = 600; // ms
 const drawingContainerLeft = document.querySelector(".drawing-container-left");
 const drawingContainerRight = document.querySelector(".drawing-container-right");
 const penSentence = document.querySelector(".pen-sentence");
 const penPrediction = document.querySelector(".pen-prediction");
+const array = [];
 let isGameStarted = false;
+
+
+// Send the array to the server every second to store the drawing
+setInterval(async () => {
+	if (array.length === 0) return;
+	await fetch("/store-drawing", {
+		method: "POST",
+		body: JSON.stringify({
+			array,
+			room_code
+		}),
+		headers: {
+			"X-CSRFToken": csrftoken,
+			"Content-Type": "application/json"
+		}
+	});
+	array.length = 0;
+}, storeDrawingDelay);
 
 gameSocket.onmessage = (e) => {
 	const data = JSON.parse(e.data);
@@ -28,11 +48,34 @@ gameSocket.onmessage = (e) => {
 	}
 };
 
-userJoinedSocket.onmessage = e => {
+userJoinedSocket.onmessage = async e => {
 	const data = JSON.parse(e.data);
 	id_user_right = data.id_user_right;
 	document.querySelector(".right-user-name").innerHTML = data.name_user_right;
 	if (!isGameStarted) isGameStarted = true;
+
+	const response = await fetch("/get-drawing", {
+		method: "POST",
+		body: JSON.stringify({
+			room_code
+		}),
+		headers: {
+			"X-CSRFToken": csrftoken,
+			"Content-Type": "application/json"
+		}
+	});
+
+	const drawings = await response.json();
+	if (drawings.status === "not found") return;
+	for (let i = 0; i < drawings.map.length; i++) {
+		const drawing = drawings.map[i];
+		const canvasElement = document.getElementById(drawing.canvas);
+		const ctx = canvasElement.getContext("2d");
+		ctx.beginPath();
+		ctx.moveTo(drawing.px, drawing.py);
+		ctx.lineTo(drawing.x, drawing.y);
+		ctx.stroke();
+	}
 };
 
 gameSocket.onopen = (e) => {
@@ -84,6 +127,15 @@ function setupCanvas(canvas, id) {
 			}
 		}));
 
+		const values = {
+			canvas: canvas.id,
+			x: canvas.mouseX,
+			y: canvas.mouseY,
+			px: canvas.pmouseX,
+			py: canvas.pmouseY
+		};
+		array.push(values);
+
 		if (timeout) return;
 		timeout = setTimeout(async () => {
 			const image = canvas.canvas.toDataURL();
@@ -124,11 +176,11 @@ function displayPrediction(data) {
 	// Correct the article if needed
 	if (vowels.includes(data[0])) {
 		randomSentence += "n";
-	// Special case for "The ..."
+		// Special case for "The ..."
 	} else if (data.substring(0, 4) === "The ") {
 		randomSentence = randomSentence.substring(0, randomSentence.length - 1);
 	}
 
-	penSentence.innerHTML = " " + randomSentence + " "
+	penSentence.innerHTML = " " + randomSentence + " ";
 	penPrediction.innerHTML = data;
 }

@@ -89,7 +89,7 @@ def main(request: HttpRequest) -> HttpResponse:
     labels = load_labels(labels_path)
     model = load_model(model_path)
     prediction = predict_drawing(model, image_file, labels)
-    print("Prediction:", prediction)
+    # print("Prediction:", prediction)
 
     return HttpResponse(prediction)
 

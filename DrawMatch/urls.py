@@ -2,7 +2,7 @@ from django.urls import path, re_path
 
 from drawmatch_app import views
 from drawmatch_app.ai_testing import draw_guess
-from drawmatch_app.routes import create_room_route, register_route, login_route, logout_route
+from drawmatch_app.routes import create_room_route, register_route, login_route, logout_route, draw_route
 
 urlpatterns = [
     # 404
@@ -14,6 +14,8 @@ urlpatterns = [
     path('logout-route', logout_route.main),
     path('create-room-route', create_room_route.main),
     path('predict', draw_guess.main),
+    path('store-drawing', draw_route.store_drawing),
+    path('get-drawing', draw_route.get_drawing),
 
     # Pages
     path('login/', views.login),
