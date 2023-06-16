@@ -1,3 +1,5 @@
+import {displayError} from "./utils.mjs";
+
 const WIDTH = 500;
 const HEIGHT = 500;
 const STROKE_WEIGHT = 3;
@@ -7,17 +9,18 @@ const drawingContainerLeft = document.querySelector(".drawing-container-left");
 const drawingContainerRight = document.querySelector(".drawing-container-right");
 const penSentence = document.querySelector(".pen-sentence");
 const penPrediction = document.querySelector(".pen-prediction");
-const array = [];
+const drawingsDatas = [];
+const wordsList = [];
 let isGameStarted = false;
 
 
-// Send the array to the server every second to store the drawing
+// Send the drawings datas to the server every storeDrawingDelay ms to store the drawing & avoid refresh loss
 setInterval(async () => {
-	if (array.length === 0) return;
+	if (drawingsDatas.length === 0) return;
 	await fetch("/store-drawing", {
 		method: "POST",
 		body: JSON.stringify({
-			array,
+			drawingsDatas,
 			room_code
 		}),
 		headers: {
@@ -25,9 +28,11 @@ setInterval(async () => {
 			"Content-Type": "application/json"
 		}
 	});
-	array.length = 0;
+	drawingsDatas.length = 0;
 }, storeDrawingDelay);
 
+
+// Drawings synchronisation
 gameSocket.onmessage = (e) => {
 	const data = JSON.parse(e.data);
 	const {payload} = data;
@@ -48,11 +53,27 @@ gameSocket.onmessage = (e) => {
 	}
 };
 
+
+// User joined synchronisation
 userJoinedSocket.onmessage = async e => {
 	const data = JSON.parse(e.data);
 	id_user_right = data.id_user_right;
 	document.querySelector(".right-user-name").innerHTML = data.name_user_right;
-	if (!isGameStarted) isGameStarted = true;
+	if (!isGameStarted) {
+		isGameStarted = true;
+		await fetch("/generate-words", {
+			method: "POST",
+			body: JSON.stringify({
+				room_code
+			}),
+			headers: {
+				"X-CSRFToken": csrftoken,
+				"Content-Type": "application/json"
+			}
+		});
+	}
+
+	await getWordsFromServer();
 
 	const response = await fetch("/get-drawing", {
 		method: "POST",
@@ -78,6 +99,7 @@ userJoinedSocket.onmessage = async e => {
 	}
 };
 
+// DEBUG //
 gameSocket.onopen = (e) => {
 	console.log("Connected to websocket (game)");
 };
@@ -93,6 +115,8 @@ userJoinedSocket.onopen = (e) => {
 userJoinedSocket.onclose = (e) => {
 	console.log("Disconnected from websocket (user joined)");
 };
+// END DEBUG //
+
 
 function setupCanvas(canvas, id) {
 	let timeout;
@@ -134,7 +158,7 @@ function setupCanvas(canvas, id) {
 			px: canvas.pmouseX,
 			py: canvas.pmouseY
 		};
-		array.push(values);
+		drawingsDatas.push(values);
 
 		if (timeout) return;
 		timeout = setTimeout(async () => {
@@ -151,6 +175,7 @@ function setupCanvas(canvas, id) {
 			});
 			const data = await response.text();
 			displayPrediction(data);
+			await checkPrediction(data, canvas.id);
 			timeout = null;
 		}, guesserDelay);
 	};
@@ -183,4 +208,51 @@ function displayPrediction(data) {
 
 	penSentence.innerHTML = " " + randomSentence + " ";
 	penPrediction.innerHTML = data;
+}
+
+async function getWordsFromServer() {
+	const wordsResponse = await fetch("/get-words", {
+		method: "POST",
+		body: JSON.stringify({
+			room_code
+		}),
+		headers: {
+			"X-CSRFToken": csrftoken,
+			"Content-Type": "application/json"
+		}
+	});
+	const words = await wordsResponse.json();
+	console.log(words);
+	if (words.status !== "not found") {
+		for (let i = 0; i < words.words.length; i++) {
+			if (!wordsList.includes(words.words[i])) wordsList.push(words.words[i]);
+		}
+		console.log(wordsList);
+	}
+}
+
+async function removeFirstWord() {
+	wordsList.length = 0;
+	await fetch("/remove-first-word", {
+		method: "POST",
+		body: JSON.stringify({
+			room_code
+		}),
+		headers: {
+			"X-CSRFToken": csrftoken,
+			"Content-Type": "application/json"
+		}
+	});
+}
+
+async function checkPrediction(data, canvas) {
+	if (data === wordsList[0]) {
+		let username;
+		const leftUsername = document.querySelector(".left-user-name").innerHTML;
+		const rightUsername = document.querySelector(".right-user-name").innerHTML;
+		username = canvas === "leftCanvas" ? leftUsername : rightUsername;
+		displayError("Yes I know, it's " + data + " ! Well done " + username + " !", true); //todo: link websocket
+		await removeFirstWord();
+		await getWordsFromServer();
+	}
 }

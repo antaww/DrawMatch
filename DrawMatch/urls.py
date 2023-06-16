@@ -16,6 +16,9 @@ urlpatterns = [
     path('predict', draw_guess.main),
     path('store-drawing', draw_route.store_drawing),
     path('get-drawing', draw_route.get_drawing),
+    path('generate-words', draw_route.generate_words),
+    path('get-words', draw_route.get_words),
+    path('remove-first-word', draw_route.remove_first_word),
 
     # Pages
     path('login/', views.login),

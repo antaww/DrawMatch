@@ -132,6 +132,11 @@ span {
     visibility: visible;
 }
 
+.announce {
+    background: rgba(255, 255, 255, 0.71) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
 @-webkit-keyframes fadein {
     from {
         top: 0;
