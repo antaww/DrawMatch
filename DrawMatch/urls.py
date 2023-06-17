@@ -19,6 +19,7 @@ urlpatterns = [
     path('generate-words', draw_route.generate_words),
     path('get-words', draw_route.get_words),
     path('remove-first-word', draw_route.remove_first_word),
+    path('erase-drawing', draw_route.erase_drawing),
 
     # Pages
     path('login/', views.login),

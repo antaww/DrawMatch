@@ -9,6 +9,7 @@
     <script src="{% static 'scripts/index.mjs' %}" type="module"></script>
     <script src="{% static 'scripts/copy-code.mjs' %}" type="module"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/74fed0e2b5.js"></script>
     <script>
 		const csrftoken = '{{ csrf_token }}';
 		const id_user =
@@ -45,6 +46,13 @@
     <div class="drawings-container">
         <div class="drawing-container-left">
             <span class="left-user-name">{{ room.id_user_left.name }}</span>
+        </div>
+        <div class="drawing-container-center">
+            {#            todo: display word to draw here#}
+            <i class="fas fa-trash-alt"></i>
+            <a href="/">
+                <button class="yellow-btn">Home</button>
+            </a>
         </div>
         <div class="drawing-container-right">
             <span class="right-user-name">

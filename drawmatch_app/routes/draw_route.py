@@ -7,6 +7,8 @@ from django.http import HttpResponse, JsonResponse
 
 from DrawMatch import settings
 
+cache_duration = 600  # 10 minutes cache (to avoid memory leak)
+
 
 def get_room_code(request) -> str:
     body_unicode = request.body.decode('utf-8')
@@ -28,7 +30,7 @@ def store_drawing(request):
         old_data = cache.get(cache_key)
         data = old_data + data
 
-    cache.set(cache_key, data, 600)  # 10 minutes cache (to avoid memory leak)
+    cache.set(cache_key, data, cache_duration)
     return JsonResponse({'status': 'ok'})
 
 
@@ -48,13 +50,11 @@ def generate_words(request):
     labels_path = os.path.join(settings.BASE_DIR, 'drawmatch_app', 'ai_testing', 'data', 'labels.txt')
     with open(labels_path, 'r') as f:
         lines = f.readlines()
-        print(lines)
         random_lines = []
         for i in range(6):
             random_lines.append(lines[int(random() * len(lines))].strip())
-    print(random_lines)
     cache_key = f'words-{room_code}'
-    cache.set(cache_key, random_lines, 600)  # 10 minutes cache (to avoid memory leak)
+    cache.set(cache_key, random_lines, cache_duration)
     return JsonResponse({'status': 'ok'})
 
 
@@ -74,7 +74,22 @@ def remove_first_word(request):
     if data is None:
         return JsonResponse({'status': 'not found'})
     data.pop(0)
-    cache.set(cache_key, data, 600)  # 10 minutes cache (to avoid memory leak)
+    cache.set(cache_key, data, cache_duration)
     return JsonResponse({'status': 'ok'})
 
-# todo: clear draw
+
+def erase_drawing(request):
+    room_code = get_room_code(request)
+    if request.method != 'POST':
+        return HttpResponse('Only POST requests are supported', status=400)
+    body_unicode = request.body.decode('utf-8')
+    loaded_json = json.loads(body_unicode)
+    data = loaded_json['canvas']
+    cache_key = f'drawing-{room_code}'
+    old_data = cache.get(cache_key)
+    new_data = []
+    for d in old_data:
+        if d['canvas'] != data:
+            new_data.append(d)
+    cache.set(cache_key, new_data, cache_duration)
+    return JsonResponse({'status': 'ok'})

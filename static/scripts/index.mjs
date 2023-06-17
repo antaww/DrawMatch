@@ -9,6 +9,7 @@ const drawingContainerLeft = document.querySelector(".drawing-container-left");
 const drawingContainerRight = document.querySelector(".drawing-container-right");
 const penSentence = document.querySelector(".pen-sentence");
 const penPrediction = document.querySelector(".pen-prediction");
+const eraseButtons = document.querySelectorAll(".fa-trash-alt");
 const drawingsDatas = [];
 const wordsList = [];
 let isGameStarted = false;
@@ -49,6 +50,14 @@ gameSocket.onmessage = (e) => {
 		ctx.beginPath();
 		ctx.moveTo(px, py);
 		ctx.lineTo(x, y);
+		ctx.stroke();
+	} else if (payload.type === "erase") {
+		const {canvas} = payload.data;
+		const canvasElement = document.getElementById(canvas);
+		const ctx = canvasElement.getContext("2d");
+		ctx.beginPath();
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillRect(0, 0, WIDTH, HEIGHT);
 		ctx.stroke();
 	}
 };
@@ -183,6 +192,35 @@ function setupCanvas(canvas, id) {
 	canvas.mousePressed = () => drawing = canvas.mouseX > 0 && canvas.mouseX <= WIDTH && canvas.mouseY > 0 && canvas.mouseY <= HEIGHT;
 
 	canvas.mouseReleased = () => drawing = false;
+
+	eraseButtons.forEach(button => {
+		button.addEventListener("click", async () => {
+			if (canvas.id === "leftCanvas" && id_user !== id_user_left) return;
+			if (canvas.id === "rightCanvas" && id_user !== id_user_right) return;
+			canvas.background("#FFFFFF");
+
+			// Erase the drawing for the other user
+			gameSocket.send(JSON.stringify({
+				type: "erase",
+				data: {
+					canvas: canvas.id
+				}
+			}));
+
+			// Erase the drawing from the server cache
+			await fetch("/erase-drawing", {
+				method: "POST",
+				body: JSON.stringify({
+					room_code,
+					canvas: canvas.id
+				}),
+				headers: {
+					"X-CSRFToken": csrftoken,
+					"Content-Type": "application/json"
+				}
+			});
+		});
+	});
 }
 
 new p5(leftCanvas => {
@@ -222,7 +260,6 @@ async function getWordsFromServer() {
 		}
 	});
 	const words = await wordsResponse.json();
-	console.log(words);
 	if (words.status !== "not found") {
 		for (let i = 0; i < words.words.length; i++) {
 			if (!wordsList.includes(words.words[i])) wordsList.push(words.words[i]);
@@ -251,7 +288,8 @@ async function checkPrediction(data, canvas) {
 		const leftUsername = document.querySelector(".left-user-name").innerHTML;
 		const rightUsername = document.querySelector(".right-user-name").innerHTML;
 		username = canvas === "leftCanvas" ? leftUsername : rightUsername;
-		displayError("Yes I know, it's " + data + " ! Well done " + username + " !", true); //todo: link websocket
+		//todo: add websocket to synchronize the game
+		displayError("Yes I know, it's " + data + " ! Well done " + username + " !", true);
 		await removeFirstWord();
 		await getWordsFromServer();
 	}
