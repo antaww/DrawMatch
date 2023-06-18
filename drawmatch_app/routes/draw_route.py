@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse
 
 from DrawMatch import settings
 
-cache_duration = 600  # 10 minutes cache (to avoid memory leak)
+cache_duration = 1200  # 20 minutes cache (to avoid memory leak)
 
 
 def get_room_code(request) -> str:
@@ -51,7 +51,7 @@ def generate_words(request):
     with open(labels_path, 'r') as f:
         lines = f.readlines()
         random_lines = []
-        for i in range(6):
+        for i in range(7):
             random_lines.append(lines[int(random() * len(lines))].strip())
     cache_key = f'words-{room_code}'
     cache.set(cache_key, random_lines, cache_duration)
@@ -93,3 +93,31 @@ def erase_drawing(request):
             new_data.append(d)
     cache.set(cache_key, new_data, cache_duration)
     return JsonResponse({'status': 'ok'})
+
+
+def add_score(request):
+    room_code = get_room_code(request)
+    if request.method != 'POST':
+        return HttpResponse('Only POST requests are supported', status=400)
+    body_unicode = request.body.decode('utf-8')
+    loaded_json = json.loads(body_unicode)
+    position = loaded_json['position']
+    score = loaded_json['score']
+    score += 1
+    cache_key = f'score-{room_code}'
+    if cache.has_key(cache_key):
+        old_data = cache.get(cache_key)
+        old_data[position] = score
+        cache.set(cache_key, old_data, cache_duration)
+    else:
+        cache.set(cache_key, {position: score}, cache_duration)
+    return JsonResponse({'status': 'ok'})
+
+
+def get_scores(request):
+    room_code = get_room_code(request)
+    cache_key = f'score-{room_code}'
+    data = cache.get(cache_key)
+    if data is None:
+        return JsonResponse({'status': 'not found'})
+    return JsonResponse({'status': 'ok', 'score': data})

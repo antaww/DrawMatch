@@ -29,7 +29,6 @@ class DrawConsumer(AsyncJsonWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data: str = None, _: Any = None) -> None:
         data = json.loads(text_data)
-        print(data['type'])
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -45,6 +44,16 @@ class DrawConsumer(AsyncJsonWebsocketConsumer):
         }))
 
     async def erase(self, event):
+        await self.send(text_data=json.dumps({
+            'payload': event['data']
+        }))
+
+    async def score(self, event):
+        await self.send(text_data=json.dumps({
+            'payload': event['data']
+        }))
+
+    async def word(self, event):
         await self.send(text_data=json.dumps({
             'payload': event['data']
         }))

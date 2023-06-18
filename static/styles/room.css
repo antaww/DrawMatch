@@ -24,11 +24,11 @@
     gap: 2em;
 }
 
-.left-user-name {
+.left-user-name, .score-left {
     color: #ffcf63;
 }
 
-.right-user-name {
+.right-user-name, .score-right {
     color: #e35533;
 }
 
@@ -88,4 +88,17 @@
 
 .fa-trash-alt:hover {
     transform: translateY(-.2em);
+}
+
+.word-to-draw {
+    max-width: 5em;
+    min-width: 5em;
+    text-align: center;
+    word-wrap: normal;
+}
+
+.score-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
 }

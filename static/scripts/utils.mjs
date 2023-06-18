@@ -8,5 +8,5 @@ export function displayError(data, announce = false) {
 	document.body.appendChild(notice);
 	setTimeout(() => {
 		document.body.removeChild(notice);
-	}, 3000);
+	}, 6000);
 }
