@@ -1,4 +1,4 @@
-from django.db.models import F
+from django.db.models import F, Count
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.static import serve
@@ -6,7 +6,7 @@ from django.views.static import serve
 from DrawMatch import settings
 from .decorators.login_decorator import custom_login_required
 from .decorators.logout_decorator import custom_logout_required
-from .models import ActiveRooms, Users
+from .models import ActiveRooms, Users, Victories
 
 
 def serve_static(request, path):
@@ -67,22 +67,36 @@ def login(request):
 @custom_login_required
 def leaderboard(request):
     try:
-        top_users = Users.objects.annotate(
-            victories_count=F('victories')
+        top_users = Victories.objects.values(
+            'user_id__name',
+            'user_id'
+        ).annotate(
+            victories_count=Count('user_id')
         ).order_by('-victories_count')[:5]
     except Exception as e:
         print(e)
 
+    print(top_users)
     user = Users.objects.get(pk=request.user.id)
+    print(user)
+    connected_user_victories = Victories.objects.filter(user_id=user).count()
+    print(connected_user_victories)
 
-    user_rank = Users.objects.filter(
-        victories__gt=user.victories
-    ).count() + 1
+    try:
+        user_rank = Victories.objects.annotate(  # todo: fix incorrect rank
+            victories_count=Count('user_id')
+        ).filter(
+            victories_count__gte=connected_user_victories
+        ).count() + 1
+        print(user_rank)
+    except Exception as e:
+        print(e)
 
     context = {
         'users': top_users,
         'connected_user': user,
-        'connected_user_rank': user_rank
+        'connected_user_rank': user_rank,
+        'connected_user_victories': connected_user_victories,
     }
     return render(request, 'leaderboard.html', context)
 

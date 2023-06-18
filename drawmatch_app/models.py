@@ -5,12 +5,11 @@ from django.db import models
 # changes and then run python manage.py migrate to apply those changes to the database.
 
 
-# Users table (id, name, password, victories, created_date)
+# Users table (id, name, password, created_date)
 class Users(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=15, unique=True)
     password = models.CharField(max_length=50)
-    victories = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
 
@@ -19,6 +18,14 @@ class ActiveRooms(models.Model):
     id = models.CharField(max_length=6, primary_key=True)
     id_user_left = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='id_user_left', null=True)
     id_user_right = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='id_user_right', null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
+# Victories table (id, user_id, room_id, created_date)
+class Victories(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_id')
+    room_id = models.ForeignKey(ActiveRooms, on_delete=models.CASCADE, related_name='room_id', default='default')
     created_date = models.DateTimeField(auto_now_add=True)
 
 

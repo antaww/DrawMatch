@@ -2,11 +2,11 @@
     background: #00000026;
     border-radius: 1em;
     color: white;
-    display: flex;
-    flex-flow: column;
     font-size: 1.3em;
     gap: 1em;
+    min-width: 20em;
     padding: 2em;
+    width: 20em;
 }
 
 .leaderboard-title {
@@ -33,6 +33,6 @@ hr {
 }
 
 th, td {
-    text-align: center;
     font-size: 1.5em;
+    text-align: center;
 }

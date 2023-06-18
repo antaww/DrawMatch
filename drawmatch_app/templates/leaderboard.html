@@ -30,8 +30,8 @@
                         {{ forloop.counter }}
                     {% endif %}
                 </td>
-                <td class="name top-{{ forloop.counter }}">{{ user.name }}</td>
-                <td class="wins top-{{ forloop.counter }}">{{ user.victories }}</td>
+                <td class="name top-{{ forloop.counter }}">{{ user.user_id__name }}</td>
+                <td class="wins top-{{ forloop.counter }}">{{ user.victories_count }}</td>
             </tr>
         {% endfor %}
         <tr>
@@ -42,7 +42,7 @@
         <tr>
             <td class="rank">{{ connected_user_rank }}</td>
             <td class="name">{{ connected_user.name }}</td>
-            <td class="wins">{{ connected_user.victories }}</td>
+            <td class="wins">{{ connected_user_victories }}</td>
         </tr>
     </table>
     <a href="/">
