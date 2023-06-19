@@ -92,7 +92,7 @@ userJoinedSocket.onmessage = async e => {
 	await scoresManager();
 
 	if (userLeftScore + userRightScore >= 7) {
-		endGame();
+		await endGame();
 	}
 	if (isGameEnded) return;
 
@@ -112,16 +112,7 @@ userJoinedSocket.onmessage = async e => {
 
 	await getWordsFromServer();
 
-	const response = await fetch("/get-drawing", {
-		method: "POST",
-		body: JSON.stringify({
-			room_code
-		}),
-		headers: {
-			"X-CSRFToken": csrftoken,
-			"Content-Type": "application/json"
-		}
-	});
+	const response = await callDrawRoute("/get-drawing");
 
 	const drawings = await response.json();
 	if (drawings.status === "not found") return;
@@ -200,6 +191,7 @@ function setupCanvas(canvas, id) {
 		drawingsDatas.push(values);
 
 		if (timeout) return;
+		if (isGameEnded) return;
 		timeout = setTimeout(async () => {
 			const image = canvas.canvas.toDataURL();
 			const response = await fetch("/predict", {
@@ -278,8 +270,8 @@ function displayPrediction(data) {
 	penPrediction.innerHTML = data;
 }
 
-async function getWordsFromServer() {
-	const wordsResponse = await fetch("/get-words", {
+async function callDrawRoute(route) {
+	return await fetch(route, {
 		method: "POST",
 		body: JSON.stringify({
 			room_code
@@ -289,31 +281,22 @@ async function getWordsFromServer() {
 			"Content-Type": "application/json"
 		}
 	});
+}
+
+async function getWordsFromServer() {
+	const wordsResponse = await callDrawRoute("/get-words");
 	const words = await wordsResponse.json();
 	if (words.status !== "not found") {
 		for (let i = 0; i < words.words.length; i++) {
 			if (!wordsList.includes(words.words[i])) wordsList.push(words.words[i]);
 		}
-		console.log(wordsList); //todo: remove this
+		// console.log(wordsList); //todo: remove this
 		if (wordsList.length > 0) {
 			wordToDraw.innerHTML = wordsList[0];
 		} else {
-			endGame();
+			await endGame();
 		}
 	}
-}
-
-async function removeFirstWord() {
-	await fetch("/remove-first-word", {
-		method: "POST",
-		body: JSON.stringify({
-			room_code
-		}),
-		headers: {
-			"X-CSRFToken": csrftoken,
-			"Content-Type": "application/json"
-		}
-	});
 }
 
 async function checkPrediction(data, canvas) {
@@ -343,7 +326,7 @@ async function checkPrediction(data, canvas) {
 			}
 		}));
 
-		await removeFirstWord();
+		await callDrawRoute("/remove-first-word");
 
 		gameSocket.send(JSON.stringify({
 			type: "word",
@@ -356,7 +339,7 @@ async function checkPrediction(data, canvas) {
 	}
 }
 
-function endGame() {
+async function endGame() {
 	isGameEnded = true;
 	const canvases = document.querySelectorAll("canvas");
 	wordToDraw.remove();
@@ -365,30 +348,35 @@ function endGame() {
 
 	const winner = userLeftScore > userRightScore ? leftUsername : rightUsername;
 	const winnerId = winner === leftUsername ? id_user_left : id_user_right;
-	//todo: add a win to the winner in the database
 
-	// Pen voice
-	penSentence.innerHTML = " Well played ";
-	penPrediction.innerHTML = winner;
+	// Add win in database (won't add if already exists)
+	if (winnerId === id_user) {
+		await fetch("/add-win", {
+			method: "POST",
+			body: JSON.stringify({
+				room_code,
+				winner_id: winnerId
+			}),
+			headers: {
+				"X-CSRFToken": csrftoken,
+				"Content-Type": "application/json"
+			}
+		});
+	}
 
 	// Display the winner
 	const leftUsernameContainer = document.querySelector(".left-user-name");
 	const rightUsernameContainer = document.querySelector(".right-user-name");
 	leftUsernameContainer.innerHTML = leftUsername + (winner === leftUsername ? " won" : " lost");
 	rightUsernameContainer.innerHTML = rightUsername + (winner === rightUsername ? " won" : " lost");
+
+	// Pen voice
+	penSentence.innerHTML = " Well played ";
+	penPrediction.innerHTML = winner;
 }
 
 async function scoresManager() {
-	const scoreResponse = await fetch("/get-scores", {
-		method: "POST",
-		body: JSON.stringify({
-			room_code
-		}),
-		headers: {
-			"X-CSRFToken": csrftoken,
-			"Content-Type": "application/json"
-		}
-	});
+	const scoreResponse = await callDrawRoute("/get-scores");
 
 	const score = await scoreResponse.json();
 	if (score.status === "not found") {

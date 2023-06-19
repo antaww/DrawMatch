@@ -1,11 +1,13 @@
 import json
 import os
+from datetime import time
 from random import random
 
 from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 
 from DrawMatch import settings
+from drawmatch_app.models import Victories, Users, ActiveRooms
 
 cache_duration = 1200  # 20 minutes cache (to avoid memory leak)
 
@@ -121,3 +123,35 @@ def get_scores(request):
     if data is None:
         return JsonResponse({'status': 'not found'})
     return JsonResponse({'status': 'ok', 'score': data})
+
+
+def add_win(request):
+    room_code = get_room_code(request)
+    if request.method != 'POST':
+        return HttpResponse('Only POST requests are supported', status=400)
+    body_unicode = request.body.decode('utf-8')
+    loaded_json = json.loads(body_unicode)
+    winner_id = loaded_json['winner_id']
+    print(winner_id)
+    print(room_code)
+    try:
+        winner = Users.objects.get(id=winner_id)
+        print(winner)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'error'})
+
+    try:
+        room = ActiveRooms.objects.get(pk=room_code)
+        print(room)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'error'})
+
+    try:
+        Victories.objects.create(room_id=room, user_id=winner)
+        print(Victories.objects.all())
+        return JsonResponse({'status': 'ok'})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'error'})

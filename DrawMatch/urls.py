@@ -22,6 +22,7 @@ urlpatterns = [
     path('erase-drawing', draw_route.erase_drawing),
     path('add-score', draw_route.add_score),
     path('get-scores', draw_route.get_scores),
+    path('add-win', draw_route.add_win),
 
     # Pages
     path('login/', views.login),
