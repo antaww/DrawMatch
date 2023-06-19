@@ -1,5 +1,4 @@
-from django.db.models import F, Count, Window
-from django.db.models.functions import RowNumber
+from django.db.models import Sum
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.static import serve
@@ -7,7 +6,7 @@ from django.views.static import serve
 from DrawMatch import settings
 from .decorators.login_decorator import custom_login_required
 from .decorators.logout_decorator import custom_logout_required
-from .models import ActiveRooms, Users, Victories
+from .models import ActiveRooms, Users, Points
 
 
 def serve_static(request, path):
@@ -67,15 +66,19 @@ def login(request):
 
 @custom_login_required
 def leaderboard(request):
-    ordered_users = Victories.objects.values(
+    ordered_users = Points.objects.values(
         'user_id__name',
         'user_id'
     ).annotate(
-        victories_count=Count('user_id')
-    ).order_by('-victories_count')
+        points_count=Sum('points')
+    ).order_by('-points_count')
 
     user = Users.objects.get(pk=request.user.id)
-    connected_user_victories = Victories.objects.filter(user_id=user).count()
+    connected_user_points = Points.objects.filter(
+        user_id=user
+    ).aggregate(
+        points_sum=Sum('points')
+    )['points_sum']
 
     user_rank = 0
     for index, ordered_user in enumerate(ordered_users):
@@ -89,7 +92,7 @@ def leaderboard(request):
         'users': top_users,
         'connected_user': user,
         'connected_user_rank': user_rank,
-        'connected_user_victories': connected_user_victories,
+        'connected_user_points': connected_user_points,
     }
     return render(request, 'leaderboard.html', context)
 

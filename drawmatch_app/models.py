@@ -21,9 +21,10 @@ class ActiveRooms(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
 
-# Victories table (id, user_id, room_id, created_date)
-class Victories(models.Model):
+# Points table (id, user_id, points, room_id, created_date)
+class Points(models.Model):
     id = models.AutoField(primary_key=True)
+    points = models.IntegerField(default=0)
     user_id = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='user_id')
     room_id = models.ForeignKey(ActiveRooms, on_delete=models.CASCADE, related_name='room_id', default='default')
     created_date = models.DateTimeField(auto_now_add=True)

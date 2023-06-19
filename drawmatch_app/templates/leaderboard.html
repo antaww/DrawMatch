@@ -18,7 +18,7 @@
         <tr class="titles">
             <th class="rank">Rank</th>
             <th class="name">Name</th>
-            <th class="wins">Wins</th>
+            <th class="points">Points</th>
         </tr>
 
         {% for user in users %}
@@ -31,7 +31,7 @@
                     {% endif %}
                 </td>
                 <td class="name top-{{ forloop.counter }}">{{ user.user_id__name }}</td>
-                <td class="wins top-{{ forloop.counter }}">{{ user.victories_count }}</td>
+                <td class="points top-{{ forloop.counter }}">{{ user.points_count }}</td>
             </tr>
         {% endfor %}
         <tr>
@@ -42,7 +42,13 @@
         <tr>
             <td class="rank">{{ connected_user_rank }}</td>
             <td class="name">{{ connected_user.name }}</td>
-            <td class="wins">{{ connected_user_victories }}</td>
+            <td class="points">
+                {% if connected_user_points == None %}
+                    0
+                {% else %}
+                    {{ connected_user_points }}
+                {% endif %}
+            </td>
         </tr>
     </table>
     <a href="/">

@@ -7,7 +7,7 @@ from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 
 from DrawMatch import settings
-from drawmatch_app.models import Victories, Users, ActiveRooms
+from drawmatch_app.models import Users, ActiveRooms, Points
 
 cache_duration = 1200  # 20 minutes cache (to avoid memory leak)
 
@@ -132,14 +132,15 @@ def add_win(request):
     body_unicode = request.body.decode('utf-8')
     loaded_json = json.loads(body_unicode)
     winner_id = loaded_json['winner_id']
+    loser_id = loaded_json['loser_id']
+    winner_score = loaded_json['winner_score']
+    loser_score = loaded_json['loser_score']
+    winner = Users.objects.get(id=winner_id)
+    loser = Users.objects.get(id=loser_id)
     print(winner_id)
     print(room_code)
-    try:
-        winner = Users.objects.get(id=winner_id)
-        print(winner)
-    except Exception as e:
-        print(e)
-        return JsonResponse({'status': 'error'})
+    print(winner_score)
+    print(loser_score)
 
     try:
         room = ActiveRooms.objects.get(pk=room_code)
@@ -149,8 +150,13 @@ def add_win(request):
         return JsonResponse({'status': 'error'})
 
     try:
-        Victories.objects.create(room_id=room, user_id=winner)
-        print(Victories.objects.all())
+        # Return if already exists
+        if Points.objects.filter(room_id=room, user_id=winner).exists():
+            print('already exists')
+            return JsonResponse({'status': 'already exists'})
+        Points.objects.create(user_id=winner, room_id=room, points=winner_score)
+        Points.objects.create(user_id=loser, room_id=room, points=loser_score)
+        print(Points.objects.all())
         return JsonResponse({'status': 'ok'})
     except Exception as e:
         print(e)

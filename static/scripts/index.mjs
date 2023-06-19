@@ -355,7 +355,10 @@ async function endGame() {
 			method: "POST",
 			body: JSON.stringify({
 				room_code,
-				winner_id: winnerId
+				winner_id: winnerId,
+				loser_id: winnerId === id_user_left ? id_user_right : id_user_left,
+				winner_score: winnerId === id_user_left ? userLeftScore : userRightScore,
+				loser_score: winnerId === id_user_left ? userRightScore : userLeftScore
 			}),
 			headers: {
 				"X-CSRFToken": csrftoken,
