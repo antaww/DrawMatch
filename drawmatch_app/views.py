@@ -1,4 +1,5 @@
-from django.db.models import F, Count
+from django.db.models import F, Count, Window
+from django.db.models.functions import RowNumber
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views.static import serve
@@ -66,31 +67,23 @@ def login(request):
 
 @custom_login_required
 def leaderboard(request):
-    try:
-        top_users = Victories.objects.values(
-            'user_id__name',
-            'user_id'
-        ).annotate(
-            victories_count=Count('user_id')
-        ).order_by('-victories_count')[:5]
-    except Exception as e:
-        print(e)
+    ordered_users = Victories.objects.values(
+        'user_id__name',
+        'user_id'
+    ).annotate(
+        victories_count=Count('user_id')
+    ).order_by('-victories_count')
 
-    print(top_users)
     user = Users.objects.get(pk=request.user.id)
-    print(user)
     connected_user_victories = Victories.objects.filter(user_id=user).count()
-    print(connected_user_victories)
 
-    try:
-        user_rank = Victories.objects.annotate(  # todo: fix incorrect rank
-            victories_count=Count('user_id')
-        ).filter(
-            victories_count__gte=connected_user_victories
-        ).count() + 1
-        print(user_rank)
-    except Exception as e:
-        print(e)
+    user_rank = 0
+    for index, ordered_user in enumerate(ordered_users):
+        if ordered_user['user_id'] == user.id:
+            user_rank = index + 1
+            break
+
+    top_users = ordered_users[:5]
 
     context = {
         'users': top_users,
