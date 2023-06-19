@@ -137,14 +137,9 @@ def add_win(request):
     loser_score = loaded_json['loser_score']
     winner = Users.objects.get(id=winner_id)
     loser = Users.objects.get(id=loser_id)
-    print(winner_id)
-    print(room_code)
-    print(winner_score)
-    print(loser_score)
 
     try:
         room = ActiveRooms.objects.get(pk=room_code)
-        print(room)
     except Exception as e:
         print(e)
         return JsonResponse({'status': 'error'})
@@ -152,11 +147,9 @@ def add_win(request):
     try:
         # Return if already exists
         if Points.objects.filter(room_id=room, user_id=winner).exists():
-            print('already exists')
             return JsonResponse({'status': 'already exists'})
         Points.objects.create(user_id=winner, room_id=room, points=winner_score)
         Points.objects.create(user_id=loser, room_id=room, points=loser_score)
-        print(Points.objects.all())
         return JsonResponse({'status': 'ok'})
     except Exception as e:
         print(e)

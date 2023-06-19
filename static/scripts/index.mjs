@@ -127,26 +127,6 @@ userJoinedSocket.onmessage = async e => {
 	}
 };
 
-// DEBUG // todo: remove
-gameSocket.onopen = (e) => {
-	console.log("Connected to websocket (game)");
-};
-
-gameSocket.onclose = (e) => {
-	console.log("Disconnected from websocket (game)");
-};
-
-userJoinedSocket.onopen = (e) => {
-	console.log("Connected to websocket (user joined)");
-};
-
-userJoinedSocket.onclose = (e) => {
-	console.log("Disconnected from websocket (user joined)");
-};
-
-// END DEBUG //
-
-
 function setupCanvas(canvas, id) {
 	let timeout;
 	let drawing = false;
@@ -290,7 +270,6 @@ async function getWordsFromServer() {
 		for (let i = 0; i < words.words.length; i++) {
 			if (!wordsList.includes(words.words[i])) wordsList.push(words.words[i]);
 		}
-		// console.log(wordsList); //todo: remove this
 		if (wordsList.length > 0) {
 			wordToDraw.innerHTML = wordsList[0];
 		} else {
