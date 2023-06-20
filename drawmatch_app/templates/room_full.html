@@ -2,7 +2,7 @@
 {% load static %}
 <html lang="en">
 <head>
-    <title>DrawMatch - Wrong room</title>
+    <title>DrawMatch - Room full</title>
     <link rel="icon" href="{% static 'images/pen.png' %}">
     <script src="{% static 'scripts/logout.mjs' %}" type="module"></script>
     <link rel="stylesheet" href="{% static 'styles/style.css' %}">
@@ -15,8 +15,8 @@
 <div class="container">
     <img class="logo" src="{% static 'images/logo.png' %}" alt="logo">
     <div class="unfindable-texts">
-        <span>What are you looking for {{ username }} ?</span>
-        <span>{{ room_code }} is not a valid room.</span>
+        <span>Maybe your friends don't want to play with you, {{ username }}.</span>
+        <span>{{ room_code }} is already full.</span>
         <a href="/">
             <button class="yellow-btn">Home</button>
         </a>

@@ -45,7 +45,11 @@ def room(request, room_code):
         requestedRoom.id_user_right = user
         user_direction = 'right'
     else:
-        return HttpResponseNotFound('Room is full!')
+        context = {
+            'room_code': room_code,
+            'username': user.name
+        }
+        return render(request, 'room_full.html', context)
 
     requestedRoom.save()
 

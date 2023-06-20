@@ -54,7 +54,11 @@ def generate_words(request):
         lines = f.readlines()
         random_lines = []
         for i in range(7):
-            random_lines.append(lines[int(random() * len(lines))].strip())
+            random_line = lines[int(random() * len(lines))].strip()
+            while random_line in random_lines:
+                random_line = lines[int(random() * len(lines))].strip()
+            random_lines.append(random_line)
+
     cache_key = f'words-{room_code}'
     cache.set(cache_key, random_lines, cache_duration)
     return JsonResponse({'status': 'ok'})
