@@ -15,8 +15,9 @@ A multiplayer web game where players have to draw words displayed in real time f
 
 This project uses the following technologies:
 
-- Django web framework            
-- HTML, CSS and JavaScript for the frontend   
+- Python 3.10 for the backend
+- HTML, CSS and JavaScript for the frontend  
+- Django web framework 
 - Websockets with Django Channels for real-time gameplay     
 - TensorFlow for the AI model  
 - SQLite database to store game data
