@@ -17,14 +17,14 @@ This project uses the following technologies:
 
 - Python 3.10 for the backend
 - HTML, CSS and JavaScript for the frontend  
-- Django web framework 
-- Websockets with Django Channels for real-time gameplay     
+- Django for web framework 
+- Django Channels for websockets (for real-time gameplay)
+- Django Daphne for ASGI server protocol (for channels)
 - TensorFlow for the AI model  
 - SQLite database to store game data
 - Numpy for numeric processing 
 - Pillow for image manipulation
 - Scikit-image for computer vision operations
-- ASGI protocol for Channels
 - p5 for graphic and interactive experiences
 
 ## Setup
