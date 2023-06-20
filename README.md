@@ -25,6 +25,7 @@ This project uses the following technologies:
 - Pillow for image manipulation
 - Scikit-image for computer vision operations
 - ASGI protocol for Channels
+- p5 for graphic and interactive experiences
 
 ## Setup
 
