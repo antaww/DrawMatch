@@ -68,7 +68,6 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'DrawMatch.wsgi.application'
 ASGI_APPLICATION = 'DrawMatch.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
