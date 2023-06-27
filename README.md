@@ -33,7 +33,7 @@ Full setup instructions for running the game locally:
 
 1. Install `Python 3.10` & `Virtualenv`  
 2. Create a Virtualenv `virtualenv -p python3 env` 
-3. Activate the virtualenv `source env/bin/activate`
+3. Activate the virtualenv `env\Scripts\activate.bat`
 4. Install requirements `pip install -r requirements.txt`
 5. Apply database migrations `python manage.py migrate` _(SQLite, locally generated)_
 6. Add your IPV4 address in `settings.py` > `ALLOWED_HOSTS`
